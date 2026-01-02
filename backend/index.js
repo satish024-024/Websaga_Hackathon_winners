@@ -2,13 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
 const cookieParser = require("cookie-parser");
-const db = require("./database/db");
+// const db = require("./database/db");
 
 // variables
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 // Connecting database
-db();
+// db();
 
 const app = express();
 
@@ -24,17 +24,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the server");
+  res.send("Welcome to the server (Supabase Edition)");
 });
 
 // routes
 
 // student route
-app.use("/student", require("./routes/student"));
+// app.use("/student", require("./routes/student"));
 // course route
-app.use("/courses", require("./routes/course"));
+// app.use("/courses", require("./routes/course"));
 // teacher route
-app.use("/teacher", require("./routes/teacher"));
+// teacher route
+// app.use("/teacher", require("./routes/teacher"));
+
+// --- SUPABASE API ---
+app.use("/api", require("./routes/supabaseRoutes"));
+
 
 app.listen(PORT, () => {
   console.log("Server Started at", PORT);

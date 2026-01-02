@@ -15,17 +15,20 @@ import Layout from "./Layout";
 import Login from "./Pages/Common/Login";
 import Attendance from "./Pages/Student/Attendance";
 import Courses from "./Pages/Teacher/Courses";
-import AdminPanel from "./Pages/admin/AdminPanel";
+import AdminLayout from "./Pages/admin/AdminLayout";
+import AdminDashboard from "./Pages/admin/AdminDashboard";
+import ManageCoursesSupabase from "./Pages/admin/ManageCoursesSupabase";
+import ProgramsBranches from "./Pages/admin/ProgramsBranches";
+import Regulations from "./Pages/admin/Regulations";
+import ManageFaculty from "./Pages/admin/ManageFaculty";
+import QuestionBank from "./Pages/admin/QuestionBank";
+import QPGenerator from "./Pages/admin/QPGenerator";
 import Unauth from "./Pages/admin/Unauth";
-import AddStudent from "./Pages/admin/AddStudent";
-import AddTeacher from "./Pages/admin/AddTeacher";
-import AddCourse from "./Pages/admin/AddCourse";
-import AssignTeacher from "./Pages/admin/AssignTeacher";
-import DeleteTeacherFromCourse from "./Pages/admin/DeleteTeacherFromCourse";
-import RemoveStudentFormCourse from "./Pages/admin/RemoveStudentFormCourse";
-import DeleteCourse from "./Pages/admin/DeleteCourse";
-import DeleteTeacher from "./Pages/admin/DeleteTeacher";
-import DeleteStudent from "./Pages/admin/DeleteStudent";
+import FacultyLayout from "./Pages/faculty/FacultyLayout";
+import FacultyDashboard from "./Pages/faculty/FacultyDashboard";
+
+
+
 
 import StudentDetails from "./Pages/Student/StudentDetails";
 import UpdateStudentdDetails from "./Pages/Student/UpdateStudentdDetails";
@@ -66,24 +69,20 @@ const router = createBrowserRouter(
         <Route path="forgetPassword" element={<ForgetPass />} />
         <Route path="forgetPassword/verifyotp" element={<VerifyOtp />} />
       </Route>
-      {/* admin routes */}
-      <Route path="admin">
-        <Route path="adminPanel" element={<AdminPanel />} />
-        <Route path="adminPanel/addStudent" element={<AddStudent />} />
-        <Route path="adminPanel/addTeacher" element={<AddTeacher />} />
-        <Route path="adminPanel/addCourse" element={<AddCourse />} />
-        <Route path="adminPanel/assignTeacher" element={<AssignTeacher />} />
-        <Route
-          path="adminPanel/removeTeacherFromCourse"
-          element={<DeleteTeacherFromCourse />}
-        />
-        <Route
-          path="adminPanel/removeStudentFromCourse"
-          element={<RemoveStudentFormCourse />}
-        />
-        <Route path="adminPanel/deleteCourse" element={<DeleteCourse />} />
-        <Route path="adminPanel/deleteTeacher" element={<DeleteTeacher />} />
-        <Route path="adminPanel/deleteStudent" element={<DeleteStudent />} />
+      {/* admin routes with layout */}
+      <Route path="admin/adminPanel" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="websaga/courses" element={<ManageCoursesSupabase />} />
+        <Route path="websaga/programs" element={<ProgramsBranches />} />
+        <Route path="websaga/regulations" element={<Regulations />} />
+        <Route path="websaga/faculty" element={<ManageFaculty />} />
+        <Route path="websaga/questions" element={<QuestionBank />} />
+        <Route path="websaga/qp-generator" element={<QPGenerator />} />
+      </Route>
+      {/* faculty routes */}
+      <Route path="faculty" element={<FacultyLayout />}>
+        <Route path="dashboard" element={<FacultyDashboard />} />
+        <Route path="questions" element={<QuestionBank />} />
       </Route>
       {/* unauthorized */}
       <Route path="/unauthorized" element={<Unauth />} />

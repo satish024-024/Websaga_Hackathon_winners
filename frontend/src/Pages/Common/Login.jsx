@@ -1,186 +1,254 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BASE_URL } from "../../constants/baseUrl";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { addUserDetails } from "../../features/UserSlice";
-import { jwtDecode } from "jwt-decode";
-import Loader from "./loader/Loader";
+import gmritLogo from "../../assets/gmrit_logo.jpeg";
+import gmritImage from "../../assets/gmrit.jpeg";
 
 const Login = () => {
-  const [rollNo, setRollNo] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student"); // default role
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  let dispatch = useDispatch();
-
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = "/src/assets/Chandigarh Engineering College Full Logo.png";
-    img.onload = () => {
-      setImageLoaded(true);
-    };
-  }, []);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
-      // Send login request
-      const response =
-        role == "student"
-          ? await axios.post(`${BASE_URL}/student/login`, {
-              student_id: rollNo,
-              password: password,
-            })
-          : await axios.post(`${BASE_URL}/teacher/login`, {
-              teacher_Id: rollNo,
-              password,
-            });
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+        email: email,
+        password: password,
+      });
 
-      console.log(response.data);
-
-      const { token } = response.data;
-
+      const { token, user } = response.data;
       Cookies.set("token", token);
+      dispatch(addUserDetails({ token: token, user: user })); // user object should be { ...data, role: ... }
 
-      dispatch(addUserDetails({ token: token }));
+      toast.success("Login successful!");
 
-      let decodedToken = jwtDecode(token);
-      console.log(decodedToken);
+      // DEBUG: Check what we received
+      console.log('Login Response - User Object:', user);
+      console.log('Login Response - User Role:', user.role);
 
-      if (decodedToken.role == "admin") {
-        return navigate("/admin/adminPanel");
+      // Redirect based on Role
+      // Backend returns role in 'user.role'
+      if (user.role === 'admin') {
+        console.log('Redirecting to Admin Panel');
+        navigate("/admin/adminPanel");
+      } else if (user.role === 'faculty') {
+        console.log('Redirecting to Faculty Dashboard');
+        navigate("/faculty/dashboard");
+      } else if (user.role === 'student') {
+        console.log('Redirecting to Student Page');
+        navigate(`/student/${user.user_id || user.id}/details`);
       } else {
-        return role == "student"
-          ? navigate(`/student/${decodedToken.id}/attendance`)
-          : navigate(`/teacher/${decodedToken.id}/courses`);
+        // Default fallback
+        console.log('Unknown role, redirecting to unauthorized');
+        navigate("/unauthorized");
       }
+
     } catch (err) {
       console.error("Login error:", err.response ? err.response.data : err);
-      toast.error("Invalid Credintials");
+      toast.error("Invalid credentials. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (!imageLoaded) {
-    return <Loader />;
-  }
 
   return (
-    <div className="flex font-oswald">
-      {/* College logo */}
-      <div className="w-[50%] h-screen hidden lg:block">
+    <div className="min-h-screen flex">
+      {/* Left Side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
         <img
-          className="h-[100%] w-[100%]"
-          src="https://media.licdn.com/dms/image/D4D22AQGHucPZtJtSeA/feedshare-shrink_800/0/1689740960638?e=2147483647&v=beta&t=sGhGLQRQjhSZd7NWNsUL-Ge497aDqSaIGrUszGaTtKc"
-          alt="college image"
+          src={gmritImage}
+          alt="GMRIT Campus"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
         />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 to-blue-900/90"></div>
+        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+          <h1 className="text-4xl font-bold mb-4">
+            Welcome to WEBSAGA
+          </h1>
+          <p className="text-lg text-gray-200 mb-8">
+            Academic ERP System for GMR Institute of Technology
+          </p>
+          <div className="space-y-4">
+            <div className="flex items-start">
+              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h3 className="font-semibold">Automated Question Paper Generation</h3>
+                <p className="text-sm text-gray-300">Intelligent selection based on Bloom's taxonomy</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h3 className="font-semibold">Comprehensive Course Management</h3>
+                <p className="text-sm text-gray-300">Manage programs, branches, and regulations</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h3 className="font-semibold">Secure Cloud Database</h3>
+                <p className="text-sm text-gray-300">Powered by Supabase PostgreSQL</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Form area */}
-      <div className="w-screen lg:w-[50%] h-screen bg-white flex items-center justify-center flex-col gap-5">
-        {/* Logo */}
-        <div className="w-[100%] flex items-center justify-center">
-          <img
-            className="w-[50%]"
-            src=" src/assets/Chandigarh Engineering College Full Logo.png"
-            alt="Chandigarh Engineering College Logo"
-          />
-        </div>
+      {/* Right Side - Login Form */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 bg-white">
+        <div className="mx-auto w-full max-w-sm">
+          {/* Logo */}
+          <div className="flex flex-col items-center mb-8">
+            <img
+              src={gmritLogo}
+              alt="GMRIT Logo"
+              className="h-16 w-16 mb-4"
+            />
+            <h2 className="text-center text-3xl font-bold text-gray-900">
+              Sign in to WEBSAGA
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              GMR Institute of Technology
+            </p>
+          </div>
 
-        {/* Form */}
-        <div className="w-screen lg:w-[100%] px-10 lg:px-[5rem] xl:px-[10rem]">
-          <form
-            method="post"
-            onSubmit={handleSubmit}
-            className="flex flex-col justify-between gap-2 border-2 border-black rounded-lg px-3 py-3"
-          >
-            {/* Role options */}
-            <div className="w-full flex justify-evenly px-5 mb-4">
-              <button
-                type="button"
-                className={`font-bold ${
-                  role === "student" ? "text-blue-500" : "text-gray-500"
-                }`}
-                onClick={() => setRole("student")}
-              >
-                Student
-              </button>
-              <div className="bg-black w-1"></div>
-              <button
-                type="button"
-                className={`font-bold ${
-                  role === "teacher" ? "text-blue-500" : "text-gray-500"
-                }`}
-                onClick={() => setRole("teacher")}
-              >
-                Teacher
-              </button>
-            </div>
-            <hr className="border-t-2 border-black" />
-
-            {/* Input fields */}
-            <div className="flex flex-col gap-4 mt-4">
-              <div className="flex flex-col">
+          {/* Login Form */}
+          <div className="mt-8">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
                 <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="roll number"
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
                 >
-                  Roll No.
+                  Email address or ID
                 </label>
-                <input
-                  type="text"
-                  id="rollno"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={rollNo}
-                  onChange={(e) => setRollNo(e.target.value)}
-                  required
-                />
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    autoComplete="username"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Enter your email or ID"
+                  />
+                </div>
               </div>
-              <div className="flex flex-col">
+
+              <div>
                 <label
-                  className="block text-gray-700 font-bold mb-2"
                   htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
+                    Remember me
+                  </label>
+                </div>
+
+                <div className="text-sm">
+                  <a
+                    href="#"
+                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Signing in...
+                    </div>
+                  ) : (
+                    'Sign in'
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* Demo Credentials */}
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
+                </div>
+              </div>
+              <div className="mt-6 bg-gray-50 rounded-md p-4">
+                <p className="text-xs text-gray-600 mb-2">For testing purposes:</p>
+                <p className="text-sm font-mono text-gray-800">
+                  Email: <span className="font-semibold">admin@websaga.com</span>
+                </p>
+                <p className="text-sm font-mono text-gray-800">
+                  Password: <span className="font-semibold">admin123</span>
+                </p>
               </div>
             </div>
+          </div>
 
-            <div className="mt-1">
-              <Link
-                to={
-                  role === "student"
-                    ? "/student/00151561ada/forgetPassword"
-                    : "/teacher/ddfsd45/forgetPassword"
-                }
-              >
-                <u className="cursor-pointer">Forget Password</u>
-              </Link>
-            </div>
-
-            {/* Submit button */}
-            <div className="flex justify-center mt-4 w-[100%]">
-              <button
-                type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Login
-              </button>
-            </div>
-          </form>
+          {/* Footer */}
+          <p className="mt-8 text-center text-xs text-gray-500">
+            © 2026 GMR Institute of Technology. All rights reserved.
+          </p>
         </div>
       </div>
     </div>
