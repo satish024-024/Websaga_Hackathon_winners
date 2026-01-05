@@ -9,8 +9,8 @@ WEBSAGA is a comprehensive Academic ERP solution designed specifically for **GMR
 This project has been re-architected to use **Supabase (PostgreSQL)** for robust data management, replacing the legacy MongoDB system.
 
 ### Team Information
-**Team Name**: Team Sri Krishna  
-**Developer**: Kadali Satish Kumar (ECE, BVC College of Engineering Rajahmundry)  
+**Team Name**: Team Sri Krishna
+**Developer**: Kadali Satish Kumar (ECE, BVC College of Engineering Rajahmundry)
 **Contact**: 9505683584 | prakashkadali3723@gmail.com
 
 ---
@@ -44,8 +44,8 @@ The application uses **React Router v6** with nested routes for modular navigati
   - QP Generator: `/admin/adminPanel/websaga/qp-generator`
 
 This pattern enables:
-✅ Shared navigation/header across all admin pages  
-✅ Consistent layout without code duplication  
+✅ Shared navigation/header across all admin pages
+✅ Consistent layout without code duplication
 ✅ Easier state management and authentication checks
 
 ---
@@ -69,7 +69,7 @@ This pattern enables:
 ### Database & Cloud
 - **Platform**: **Supabase**
 - **Type**: PostgreSQL (Relational Database)
-- **Features Used**: 
+- **Features Used**:
   - Relational Tables (Foreign Keys for data integrity)
   - Row Level Security (RLS) capable
   - Real-time subscriptions (future scope)
@@ -141,7 +141,7 @@ websaga/
     │   │       ├── ManageCoursesSupabase.jsx  # Course CRUD
     │   │       ├── ManageFaculty.jsx      # Faculty management
     │   │       ├── QuestionBank.jsx       # Question repository
-    │   │       └── QPGenerator.jsx        # Question Paper generation
+    │   │       ├── QPGenerator.jsx        # Question Paper generation
     │   ├── constants/
     │   │   └── baseUrl.js       # API base URL configuration
     │   ├── main.jsx             # React Router & App entry point
