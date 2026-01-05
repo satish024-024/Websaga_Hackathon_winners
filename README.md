@@ -1,9 +1,17 @@
 # WEBSAGA Academic ERP - Question Paper Generation System
 
+## 🏆 Project Achievement
+**First Prize Winner** - Web Saga Overnight Hackathon at **GMRIT College**.
+
 ## 🚀 Project Overview
 WEBSAGA is a comprehensive Academic ERP solution designed specifically for **GMR Institute of Technology**. The core capability of this system is an intelligent **Question Paper Generator** that automates the process of creating exam papers based on strict academic criteria (Bloom's Taxonomy, Course Outcomes, Difficulty Levels).
 
 This project has been re-architected to use **Supabase (PostgreSQL)** for robust data management, replacing the legacy MongoDB system.
+
+### Team Information
+**Team Name**: Team Sri Krishna  
+**Developer**: Kadali Satish Kumar (ECE, BVC College of Engineering Rajahmundry)  
+**Contact**: 9505683584 | prakashkadali3723@gmail.com
 
 ---
 

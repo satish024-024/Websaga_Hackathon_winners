@@ -105,11 +105,66 @@ const QuestionBank = () => {
         }
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                toast.error('Please select an image file');
+                return;
+            }
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('Image size should be less than 5MB');
+                return;
+            }
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const uploadImage = async () => {
+        if (!imageFile) return null;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        try {
+            const res = await axios.post(`${BASE_URL}/api/upload/question-image`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            return res.data.url;
+        } catch (error) {
+            toast.error('Image upload failed');
+            return null;
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const addQuestion = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${BASE_URL}/api/questions`, formData);
-            toast.success('Question added!');
+            // Upload image if present
+            let imageUrl = '';
+            if (imageFile) {
+                imageUrl = await uploadImage();
+                if (!imageUrl) {
+                    toast.error('Failed to upload image. Please try again.');
+                    return; // Stop if image upload failed
+                }
+            }
+
+            // Submit question with image URL
+            await axios.post(`${BASE_URL}/api/questions`, {
+                ...formData,
+                image_url: imageUrl
+            });
+
+            toast.success('Question added successfully!');
+
+            // Reset form
             setFormData({
                 course_id: selectedCourse,
                 co_id: '',
@@ -117,8 +172,18 @@ const QuestionBank = () => {
                 difficulty_level_id: '',
                 unit_id: '',
                 question_text: '',
-                marks: 2
+                marks: 2,
+                question_type: 'descriptive',
+                option_a: '',
+                option_b: '',
+                option_c: '',
+                option_d: '',
+                correct_option: ''
             });
+            setImageFile(null);
+            setImagePreview('');
+            const imageInput = document.getElementById('imageInput');
+            if (imageInput) imageInput.value = ''; // Clear file input
             fetchQuestions(selectedCourse);
         } catch (error) {
             toast.error(error.response?.data?.msg || 'Failed to add question');
@@ -259,6 +324,41 @@ const QuestionBank = () => {
                                 />
                             </div>
 
+                            {/* Image Upload Section */}
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Question Diagram/Image (Optional)</label>
+                                <input
+                                    id="imageInput"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className="w-full border rounded px-3 py-2"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
+
+                                {/* Image Preview */}
+                                {imagePreview && (
+                                    <div className="mt-3 relative inline-block">
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="max-w-xs max-h-48 border rounded shadow"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setImageFile(null);
+                                                setImagePreview('');
+                                                document.getElementById('imageInput').value = '';
+                                            }}
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-bold mb-1">Marks</label>
@@ -274,8 +374,13 @@ const QuestionBank = () => {
                                 </div>
                             </div>
 
-                            <button className="w-full bg-blue-500 text-white px-4 py-2 rounded font-bold">
-                                Add Question
+                            <button
+                                type="submit"
+                                disabled={uploading}
+                                className={`w-full px-4 py-2 rounded font-bold text-white ${uploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+                                    }`}
+                            >
+                                {uploading ? 'Uploading Image...' : 'Add Question'}
                             </button>
                         </form>
                     </div>

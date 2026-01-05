@@ -7,6 +7,8 @@ const qpController = require('../controller/qpControllerSupabase');
 const authController = require('../controller/authControllerSupabase');
 const facultyController = require('../controller/facultyControllerSupabase');
 const uploadController = require('../controller/uploadControllerCloudinary');
+const facultyAllocationController = require('../controller/facultyAllocationController');
+const facultyQPController = require('../controller/facultyQPController');
 
 // Multer setup for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
@@ -44,6 +46,10 @@ router.get('/admin/pb-mapping', adminController.getProgramBranchMappings);
 router.post('/admin/courses', adminController.createCourse);
 router.get('/admin/courses', adminController.getCourses);
 
+// Course-Branch Mappings
+router.post('/admin/course-branch-mapping', adminController.addCourseBranchMapping);
+router.delete('/admin/course-branch-mapping', adminController.removeCourseBranchMapping);
+
 
 // --- FACULTY ROUTES ---
 router.post('/faculty', facultyController.createFaculty);
@@ -70,5 +76,27 @@ router.get('/questions', qpController.getQuestions);
 
 router.post('/qp/select-random', qpController.selectRandomQuestions);
 
-module.exports = router;
+// --- FACULTY COURSE ALLOCATION ---
+router.post('/admin/allocate-course', facultyAllocationController.allocateCourseToFaculty);
+router.get('/admin/course-allocations', facultyAllocationController.getAllAllocations);
+router.get('/faculty/:faculty_id/allocated-courses', facultyAllocationController.getFacultyAllocatedCourses);
+router.delete('/admin/course-allocations/:id', facultyAllocationController.deleteAllocation);
 
+// --- FACULTY QP MANAGEMENT ---
+router.post('/faculty/qp/create', facultyQPController.createQuestionPaper);
+router.put('/faculty/qp/:id', facultyQPController.updateQuestionPaper);
+router.post('/faculty/qp/:id/submit', facultyQPController.submitQuestionPaper);
+router.get('/faculty/qp/my-papers', facultyQPController.getMyQuestionPapers);
+router.delete('/faculty/qp/:id', facultyQPController.deleteQuestionPaper);
+
+// --- ADMIN QP APPROVAL ---
+router.get('/admin/qp/all', facultyQPController.getAllQuestionPapers);
+router.post('/admin/qp/:id/approve', facultyQPController.approveQuestionPaper);
+router.post('/admin/qp/:id/reject', facultyQPController.rejectQuestionPaper);
+router.post('/admin/qp/:id/publish', facultyQPController.publishQuestionPaper);
+
+// --- QP SETS GENERATION ---
+router.post('/qp/:qp_id/generate-sets', facultyQPController.generateQuestionPaperSets);
+router.get('/qp/:qp_id/sets', facultyQPController.getQuestionPaperSets);
+
+module.exports = router;

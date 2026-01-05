@@ -233,12 +233,13 @@ const getProgramBranchMappings = async (req, res) => {
     return res.status(200).json({ success: true, data });
 };
 
-// --- COURSES ---
+
+// --- COURSES (UPDATED FOR MANY-TO-MANY) ---
 const createCourse = async (req, res) => {
     const {
         course_name,
         course_code,
-        program_branch_id,
+        program_branch_ids, // Changed: Now accepts array of program_branch_ids
         regulation_id,
         year,
         semester,
@@ -247,12 +248,12 @@ const createCourse = async (req, res) => {
         credits
     } = req.body;
 
-    const { data, error } = await supabase
+    // Step 1: Create the course (without program_branch_id)
+    const { data: courseData, error: courseError } = await supabase
         .from('courses')
         .insert([{
             course_name,
             course_code,
-            program_branch_id,
             regulation_id,
             year,
             semester,
@@ -260,28 +261,104 @@ const createCourse = async (req, res) => {
             elective_type,
             credits
         }])
-        .select();
+        .select()
+        .single();
 
-    if (error) {
-        console.error('Course creation error:', error);
-        console.error('Request body:', req.body);
-        return res.status(400).json({ success: false, msg: error.message, details: error });
+    if (courseError) {
+        console.error('Course creation error:', courseError);
+        return res.status(400).json({ success: false, msg: courseError.message, details: courseError });
     }
-    return res.status(201).json({ success: true, data: data[0] });
+
+    // Step 2: Create course-branch mappings
+    if (program_branch_ids && Array.isArray(program_branch_ids) && program_branch_ids.length > 0) {
+        const mappings = program_branch_ids.map(pb_id => ({
+            course_id: courseData.id,
+            program_branch_id: pb_id
+        }));
+
+        const { error: mappingError } = await supabase
+            .from('course_branch_mappings')
+            .insert(mappings);
+
+        if (mappingError) {
+            console.error('Course-branch mapping error:', mappingError);
+            // Rollback: delete the course
+            await supabase.from('courses').delete().eq('id', courseData.id);
+            return res.status(400).json({
+                success: false,
+                msg: 'Failed to create course-branch mappings',
+                details: mappingError
+            });
+        }
+    }
+
+    return res.status(201).json({ success: true, data: courseData });
 };
 
 const getCourses = async (req, res) => {
-    // Filter by program if provided query param
-    // But standard list first
-    const { data, error } = await supabase
+    const { program_branch_id } = req.query;
+
+    // Simplified query - get courses with basic info only
+    let query = supabase
         .from('courses')
         .select(`
-      *,
-      regulation:regulations(name)
-    `);
+            *,
+            regulation:regulations(name),
+            program_branch:program_branch_mappings(
+                id,
+                program:programs(id, name, code),
+                branch:branches(id, name, code)
+            )
+        `);
+
+    if (program_branch_id) {
+        query = query.eq('program_branch_id', program_branch_id);
+    }
+
+    const { data, error } = await query;
 
     if (error) return res.status(400).json({ success: false, msg: error.message });
+
     return res.status(200).json({ success: true, data });
+};
+
+// Add branches to an existing course
+const addCourseBranchMapping = async (req, res) => {
+    const { course_id, program_branch_ids } = req.body;
+
+    if (!program_branch_ids || !Array.isArray(program_branch_ids)) {
+        return res.status(400).json({
+            success: false,
+            msg: 'program_branch_ids must be an array'
+        });
+    }
+
+    const mappings = program_branch_ids.map(pb_id => ({
+        course_id,
+        program_branch_id: pb_id
+    }));
+
+    const { data, error } = await supabase
+        .from('course_branch_mappings')
+        .insert(mappings)
+        .select();
+
+    if (error) return res.status(400).json({ success: false, msg: error.message });
+    return res.status(201).json({ success: true, data });
+};
+
+// Remove a branch from a course
+const removeCourseBranchMapping = async (req, res) => {
+    const { course_id, program_branch_id } = req.body;
+
+    const { error } = await supabase
+        .from('course_branch_mappings')
+        .delete()
+        .eq('course_id', course_id)
+        .eq('program_branch_id', program_branch_id);
+
+    if (error) return res.status(400).json({ success: false, msg: error.message });
+    return res.status(200).json({ success: true, msg: 'Mapping removed successfully' });
 };
 
 module.exports = {
@@ -289,7 +366,6 @@ module.exports = {
     createBranch, getBranches, updateBranch, deleteBranch, toggleBranchStatus,
     createRegulation, getRegulations, updateRegulation, deleteRegulation, toggleRegulationStatus,
     mapProgramBranch, getProgramBranchMappings,
-    createCourse, getCourses
+    createCourse, getCourses,
+    addCourseBranchMapping, removeCourseBranchMapping
 };
-
-

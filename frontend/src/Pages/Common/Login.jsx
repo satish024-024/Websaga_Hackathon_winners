@@ -63,83 +63,85 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
+    <div className="min-h-screen flex font-sans text-gray-900">
+      {/* Left Side - Hero Section */}
+      <div className="hidden lg:flex lg:w-7/12 relative overflow-hidden bg-gray-900">
         <img
           src={gmritImage}
           alt="GMRIT Campus"
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
+          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 animate-slow-zoom"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 to-blue-900/90"></div>
-        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
-          <h1 className="text-4xl font-bold mb-4">
-            Welcome to WEBSAGA
-          </h1>
-          <p className="text-lg text-gray-200 mb-8">
-            Academic ERP System for GMR Institute of Technology
-          </p>
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <div>
-                <h3 className="font-semibold">Automated Question Paper Generation</h3>
-                <p className="text-sm text-gray-300">Intelligent selection based on Bloom's taxonomy</p>
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 via-blue-900/85 to-purple-900/80 backdrop-blur-sm"></div>
+
+        {/* Decorative Circles */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-1/2 -right-24 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div className="relative z-10 flex flex-col justify-center px-16 text-white h-full">
+          <div className="mb-12">
+            <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-indigo-100">WEBSAGA</span>
+            </h1>
+            <p className="text-xl text-blue-100/90 font-light max-w-lg leading-relaxed">
+              The Next-Gen Academic ERP System for GMR Institute of Technology. Streamlining education through innovation.
+            </p>
+          </div>
+
+          <div className="space-y-6 max-w-lg">
+            {[
+              { title: "Automated Question Paper Generation", desc: "Intelligent selection based on Bloom's taxonomy" },
+              { title: "Comprehensive Course Management", desc: "Manage programs, branches, and regulations seamlessly" },
+              { title: "Secure Cloud Database", desc: "Powered by enterprise-grade Supabase PostgreSQL" }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-start p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+                <div className="mr-4 mt-1 bg-blue-500/20 p-2 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-white">{item.title}</h3>
+                  <p className="text-sm text-blue-200/80 mt-1">{item.desc}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <div>
-                <h3 className="font-semibold">Comprehensive Course Management</h3>
-                <p className="text-sm text-gray-300">Manage programs, branches, and regulations</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <svg className="w-6 h-6 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <div>
-                <h3 className="font-semibold">Secure Cloud Database</h3>
-                <p className="text-sm text-gray-300">Powered by Supabase PostgreSQL</p>
-              </div>
-            </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-sm text-blue-300/60 font-medium">
+            Trusted by over 5000+ students and faculty members.
           </div>
         </div>
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 bg-white">
-        <div className="mx-auto w-full max-w-sm">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
-            <img
-              src={gmritLogo}
-              alt="GMRIT Logo"
-              className="h-16 w-16 mb-4"
-            />
-            <h2 className="text-center text-3xl font-bold text-gray-900">
-              Sign in to WEBSAGA
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              GMR Institute of Technology
-            </p>
+      <div className="flex-1 flex flex-col justify-center items-center p-8 bg-gray-50 relative">
+        <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl border border-gray-100 relative z-10">
+
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-block p-3 rounded-full bg-indigo-50 mb-4">
+              <img
+                src={gmritLogo}
+                alt="GMRIT Logo"
+                className="h-12 w-12 object-contain"
+              />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Sign In</h2>
+            <p className="mt-2 text-sm text-gray-500">Access your admin or faculty dashboard</p>
           </div>
 
-          {/* Login Form */}
-          <div className="mt-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-5">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address or ID
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
+                  Email Address or ID
                 </label>
-                <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    </svg>
+                  </div>
                   <input
                     id="email"
                     name="email"
@@ -148,20 +150,22 @@ const Login = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Enter your email or ID"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 outline-none sm:text-sm"
+                    placeholder="name@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">
                   Password
                 </label>
-                <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
                   <input
                     id="password"
                     name="password"
@@ -170,86 +174,54 @@ const Login = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Enter your password"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 outline-none sm:text-sm"
+                    placeholder="••••••••"
                   />
                 </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="ml-2 block text-sm text-gray-900"
-                  >
-                    Remember me
-                  </label>
-                </div>
-
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Signing in...
-                    </div>
-                  ) : (
-                    'Sign in'
-                  )}
-                </button>
-              </div>
-            </form>
-
-            {/* Demo Credentials */}
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
-                </div>
-              </div>
-              <div className="mt-6 bg-gray-50 rounded-md p-4">
-                <p className="text-xs text-gray-600 mb-2">For testing purposes:</p>
-                <p className="text-sm font-mono text-gray-800">
-                  Email: <span className="font-semibold">admin@websaga.com</span>
-                </p>
-                <p className="text-sm font-mono text-gray-800">
-                  Password: <span className="font-semibold">admin123</span>
-                </p>
               </div>
             </div>
-          </div>
 
-          {/* Footer */}
-          <p className="mt-8 text-center text-xs text-gray-500">
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600 cursor-pointer select-none">
+                  Remember me
+                </label>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {isLoading ? (
+                <div className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Authenticating...
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-xs text-gray-400">
             © 2026 GMR Institute of Technology. All rights reserved.
           </p>
         </div>
+
+        {/* Background Pattern for Right Side */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none"></div>
       </div>
     </div>
   );

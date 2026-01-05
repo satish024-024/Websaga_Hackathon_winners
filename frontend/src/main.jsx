@@ -24,8 +24,12 @@ import ManageFaculty from "./Pages/admin/ManageFaculty";
 import QuestionBank from "./Pages/admin/QuestionBank";
 import QPGenerator from "./Pages/admin/QPGenerator";
 import Unauth from "./Pages/admin/Unauth";
+import FacultyCourseAllocation from "./Pages/admin/FacultyCourseAllocation";
 import FacultyLayout from "./Pages/faculty/FacultyLayout";
 import FacultyDashboard from "./Pages/faculty/FacultyDashboard";
+import MyCourses from "./Pages/faculty/MyCourses";
+import CourseDetails from "./Pages/faculty/CourseDetails";
+import MyQuestionPapers from "./Pages/faculty/MyQuestionPapers";
 
 
 
@@ -76,12 +80,16 @@ const router = createBrowserRouter(
         <Route path="websaga/programs" element={<ProgramsBranches />} />
         <Route path="websaga/regulations" element={<Regulations />} />
         <Route path="websaga/faculty" element={<ManageFaculty />} />
+        <Route path="faculty-allocation" element={<FacultyCourseAllocation />} />
         <Route path="websaga/questions" element={<QuestionBank />} />
         <Route path="websaga/qp-generator" element={<QPGenerator />} />
       </Route>
       {/* faculty routes */}
       <Route path="faculty" element={<FacultyLayout />}>
         <Route path="dashboard" element={<FacultyDashboard />} />
+        <Route path="my-courses" element={<MyCourses />} />
+        <Route path="course/:courseId" element={<CourseDetails />} />
+        <Route path="my-qp" element={<MyQuestionPapers />} />
         <Route path="questions" element={<QuestionBank />} />
       </Route>
       {/* unauthorized */}
