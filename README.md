@@ -9,9 +9,13 @@ WEBSAGA is a comprehensive Academic ERP solution designed specifically for **GMR
 This project has been re-architected to use **Supabase (PostgreSQL)** for robust data management, replacing the legacy MongoDB system.
 
 ### Team Information
-**Team Name**: Team Sri Krishna
-**Developer**: Kadali Satish Kumar (ECE, BVC College of Engineering Rajahmundry)
+**Team Name**: Web Wizards  
+**Developer**: Kadali Satish Kumar (ECE, BVC College of Engineering Rajahmundry)  
 **Contact**: 9505683584 | prakashkadali3723@gmail.com
+
+### 📸 Victory Moments
+![Web Wizards Team](project_images/WEB_WIZARDS.jpeg)
+![First Prize Victory](project_images/STAGE_1ST_PRICE.jpeg)
 
 ---
 
